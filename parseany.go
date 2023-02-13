@@ -1,7 +1,7 @@
-// Package dateparse parses date-strings without knowing the format
+// Package dateparser parses date-strings without knowing the format
 // in advance, using a fast lex based approach to eliminate shotgun
 // attempts.  It leans towards US style dates when there is a conflict.
-package dateparse
+package dateparser
 
 import (
 	"fmt"
@@ -170,15 +170,14 @@ func ParseIn(datestr string, loc *time.Location, opts ...ParserOption) (time.Tim
 // Set Location to time.Local.  Same as ParseIn Location but lazily uses
 // the global time.Local variable for Location argument.
 //
-//     denverLoc, _ := time.LoadLocation("America/Denver")
-//     time.Local = denverLoc
+//	denverLoc, _ := time.LoadLocation("America/Denver")
+//	time.Local = denverLoc
 //
-//     t, err := dateparse.ParseLocal("3/1/2014")
+//	t, err := dateparse.ParseLocal("3/1/2014")
 //
 // Equivalent to:
 //
-//     t, err := dateparse.ParseIn("3/1/2014", denverLoc)
-//
+//	t, err := dateparse.ParseIn("3/1/2014", denverLoc)
 func ParseLocal(datestr string, opts ...ParserOption) (time.Time, error) {
 	p, err := parseTime(datestr, time.Local, opts...)
 	if err != nil {
@@ -204,9 +203,8 @@ func MustParse(datestr string, opts ...ParserOption) time.Time {
 // ParseFormat parse's an unknown date-time string and returns a layout
 // string that can parse this (and exact same format) other date-time strings.
 //
-//     layout, err := dateparse.ParseFormat("2013-02-01 00:00:00")
-//     // layout = "2006-01-02 15:04:05"
-//
+//	layout, err := dateparse.ParseFormat("2013-02-01 00:00:00")
+//	// layout = "2006-01-02 15:04:05"
 func ParseFormat(datestr string, opts ...ParserOption) (string, error) {
 	p, err := parseTime(datestr, nil, opts...)
 	if err != nil {
@@ -233,8 +231,8 @@ func ParseStrict(datestr string, opts ...ParserOption) (time.Time, error) {
 }
 
 func parseTime(datestr string, loc *time.Location, opts ...ParserOption) (p *parser, err error) {
-
 	p = newParser(datestr, loc, opts...)
+
 	if p.retryAmbiguousDateWithSwap {
 		// month out of range signifies that a day/month swap is the correct solution to an ambiguous date
 		// this is because it means that a day is being interpreted as a month and overflowing the valid value for that
@@ -268,7 +266,7 @@ iterRunes:
 		//r := rune(datestr[i])
 		r, bytesConsumed := utf8.DecodeRuneInString(datestr[i:])
 		if bytesConsumed > 1 {
-			i += (bytesConsumed - 1)
+			i += bytesConsumed - 1
 		}
 
 		// gou.Debugf("i=%d r=%s state=%d   %s", i, string(r), p.stateDate, datestr)
@@ -669,10 +667,10 @@ iterRunes:
 				p.setDay()
 				p.stateTime = timeStart
 				if i > p.daylen+len(" Sep") { //  November etc
-					// If len greather than space + 3 it must be full month
+					// If len greater than space + 3 it must be full month
 					p.stateDate = dateDigitWsMolong
 				} else {
-					// If len=3, the might be Feb or May?  Ie ambigous abbreviated but
+					// If len=3, the might be Feb or May?  Ie ambiguous abbreviated, but
 					// we can parse may with either.  BUT, that means the
 					// format may not be correct?
 					// mo := strings.ToLower(datestr[p.daylen+1 : i])
@@ -728,7 +726,7 @@ iterRunes:
 					p.stateDate = dateDigitDotDot
 				} else {
 					// 2018.09.30
-					//p.molen = 2
+					// p.molen = 2
 					p.molen = i - p.moi
 					p.dayi = i + 1
 					p.setMonth()
@@ -818,7 +816,7 @@ iterRunes:
 					p.skip = i + 2
 					i++
 					// TODO:  lets just make this "skip" as we don't need
-					// the mon, monday, they are all superfelous and not needed
+					// the mon, monday, they are all superfluous and not needed
 					// just lay down the skip, no need to fill and then skip
 				}
 			case r == '.':
@@ -1989,7 +1987,7 @@ type parser struct {
 }
 
 // ParserOption defines a function signature implemented by options
-// Options defined like this accept the parser and operate on the data within
+// defined like this accept the parser and operate on the data within
 type ParserOption func(*parser) error
 
 // PreferMonthFirst is an option that allows preferMonthFirst to be changed from its default
@@ -2044,6 +2042,7 @@ func (p *parser) set(start int, val string) {
 		p.format[start+i] = byte(r)
 	}
 }
+
 func (p *parser) setMonth() {
 	if p.molen == 2 {
 		p.set(p.moi, "01")
@@ -2066,6 +2065,7 @@ func (p *parser) setYear() {
 		p.set(p.yeari, "2006")
 	}
 }
+
 func (p *parser) coalesceDate(end int) {
 	if p.yeari > 0 {
 		if p.yearlen == 0 {
@@ -2082,12 +2082,15 @@ func (p *parser) coalesceDate(end int) {
 		p.setDay()
 	}
 }
+
 func (p *parser) ts() string {
 	return fmt.Sprintf("h:(%d:%d) m:(%d:%d) s:(%d:%d)", p.houri, p.hourlen, p.mini, p.minlen, p.seci, p.seclen)
 }
+
 func (p *parser) ds() string {
 	return fmt.Sprintf("%s d:(%d:%d) m:(%d:%d) y:(%d:%d)", p.datestr, p.dayi, p.daylen, p.moi, p.molen, p.yeari, p.yearlen)
 }
+
 func (p *parser) coalesceTime(end int) {
 	// 03:04:05
 	// 15:04:05
@@ -2128,6 +2131,7 @@ func (p *parser) coalesceTime(end int) {
 		}
 	}
 }
+
 func (p *parser) setFullMonth(month string) {
 	if p.moi == 0 {
 		p.format = []byte(fmt.Sprintf("%s%s", "January", p.format[len(month):]))
@@ -2171,6 +2175,7 @@ func (p *parser) parse() (time.Time, error) {
 	//gou.Debugf("parse layout=%q input=%q   \ntx, err := time.ParseInLocation(%q, %q, %v)", string(p.format), p.datestr, string(p.format), p.datestr, p.loc)
 	return time.ParseInLocation(string(p.format), p.datestr, p.loc)
 }
+
 func isDay(alpha string) bool {
 	for _, day := range days {
 		if alpha == day {
@@ -2179,6 +2184,7 @@ func isDay(alpha string) bool {
 	}
 	return false
 }
+
 func isMonthFull(alpha string) bool {
 	for _, month := range months {
 		if alpha == month {

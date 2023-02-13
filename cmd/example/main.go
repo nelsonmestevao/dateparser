@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/nelsonmestevao/dateparser"
 	"time"
 
-	"github.com/araddon/dateparse"
 	"github.com/scylladb/termtables"
 )
 
@@ -154,7 +154,7 @@ func main() {
 
 	table.AddHeaders("Input", "Parsed, and Output as %v")
 	for _, dateExample := range examples {
-		t, err := dateparse.ParseLocal(dateExample)
+		t, err := dateparser.ParseLocal(dateExample)
 		if err != nil {
 			panic(err.Error())
 		}

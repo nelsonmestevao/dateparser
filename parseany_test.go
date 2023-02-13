@@ -1,4 +1,4 @@
-package dateparse
+package dateparser
 
 import (
 	"fmt"
@@ -420,7 +420,6 @@ var testInputs = []dateTest{
 }
 
 func TestParse(t *testing.T) {
-
 	// Lets ensure we are operating on UTC
 	time.Local = time.UTC
 
@@ -484,7 +483,6 @@ func testDidPanic(datestr string) (paniced bool) {
 }
 
 func TestPStruct(t *testing.T) {
-
 	denverLoc, err := time.LoadLocation("America/Denver")
 	assert.Equal(t, nil, err)
 
@@ -597,7 +595,6 @@ var testParseStrict = []dateTest{
 }
 
 func TestParseStrict(t *testing.T) {
-
 	for _, th := range testParseStrict {
 		_, err := ParseStrict(th.in)
 		assert.NotEqual(t, nil, err)
@@ -610,7 +607,7 @@ func TestParseStrict(t *testing.T) {
 	assert.Equal(t, nil, err)
 }
 
-// Lets test to see how this performs using different Timezones/Locations
+// Let's test to see how this performs using different Timezones/Locations
 // Also of note, try changing your server/machine timezones and repeat
 //
 // !!!!! The time-zone of local machine effects the results!
@@ -670,7 +667,7 @@ func TestInLocation(t *testing.T) {
 	assert.Equal(t, "MST", zone, "Should have found zone = MST %v", zone)
 	assert.Equal(t, "2013-02-01 07:00:00 +0000 UTC", fmt.Sprintf("%v", ts.In(time.UTC)))
 
-	// Lets advance past daylight savings time start
+	// Let's advance past daylight savings time start
 	// use parseIn and see offset/zone has changed to Daylight Savings Equivalents
 	ts, err = ParseIn("2013-04-01 00:00:00", denverLoc)
 	assert.Equal(t, nil, err)

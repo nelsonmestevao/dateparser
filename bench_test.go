@@ -1,4 +1,4 @@
-package dateparse
+package dateparser
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 )
 
 /*
-
 go test -bench Parse
 
 BenchmarkShotgunParse			50000	     37588 ns/op	   13258 B/op	     167 allocs/op
@@ -21,7 +20,6 @@ BenchmarkParseAny-4       	  200000	      8627 ns/op	     144 B/op	       3 allo
 BenchmarkShotgunParse-8   	   50000	     33940 ns/op	   13136 B/op	     169 allocs/op
 BenchmarkParseAny-8   	  		200000	     10146 ns/op	     912 B/op	      29 allocs/op
 BenchmarkParseDateString-8   	10000	    123077 ns/op	     208 B/op	      13 allocs/op
-
 */
 func BenchmarkShotgunParse(b *testing.B) {
 	b.ReportAllocs()

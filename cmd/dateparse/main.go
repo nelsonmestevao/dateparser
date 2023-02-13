@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/nelsonmestevao/dateparser"
 	"os"
 	"time"
 
 	"github.com/scylladb/termtables"
-	"github.com/araddon/dateparse"
 )
 
 var (
@@ -31,7 +31,7 @@ func main() {
 
 	datestr = flag.Args()[0]
 
-	layout, err := dateparse.ParseFormat(datestr)
+	layout, err := dateparser.ParseFormat(datestr)
 	if err != nil {
 		fatal(err)
 	}
@@ -82,7 +82,7 @@ type parser func(datestr string, loc *time.Location, utc bool) string
 
 func parseLocal(datestr string, loc *time.Location, utc bool) string {
 	time.Local = loc
-	t, err := dateparse.ParseLocal(datestr)
+	t, err := dateparser.ParseLocal(datestr)
 	if err != nil {
 		return err.Error()
 	}
@@ -93,7 +93,7 @@ func parseLocal(datestr string, loc *time.Location, utc bool) string {
 }
 
 func parseIn(datestr string, loc *time.Location, utc bool) string {
-	t, err := dateparse.ParseIn(datestr, loc)
+	t, err := dateparser.ParseIn(datestr, loc)
 	if err != nil {
 		return err.Error()
 	}
@@ -104,7 +104,7 @@ func parseIn(datestr string, loc *time.Location, utc bool) string {
 }
 
 func parseAny(datestr string, loc *time.Location, utc bool) string {
-	t, err := dateparse.ParseAny(datestr)
+	t, err := dateparser.ParseAny(datestr)
 	if err != nil {
 		return err.Error()
 	}
@@ -115,7 +115,7 @@ func parseAny(datestr string, loc *time.Location, utc bool) string {
 }
 
 func parseStrict(datestr string, loc *time.Location, utc bool) string {
-	t, err := dateparse.ParseStrict(datestr)
+	t, err := dateparser.ParseStrict(datestr)
 	if err != nil {
 		return err.Error()
 	}
